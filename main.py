@@ -146,11 +146,14 @@ fig1 = px.line(
 )
 
 
-# 핑크색 선
+# 노란색 선
 fig1.update_traces(
-    line=dict(color="#E91E63", width=3),
+    line=dict(
+        color="#F4B400",
+        width=3
+    ),
     marker=dict(
-        color="#E91E63",
+        color="#F4B400",
         size=7
     ),
     hovertemplate=(
@@ -286,11 +289,11 @@ fig2 = px.line(
         "영화명": "영화"
     },
     color_discrete_sequence=[
-        "#E91E63",
-        "#F06292",
-        "#EC407A",
-        "#AD1457",
-        "#F48FB1"
+        "#F4B400",
+        "#FFD54F",
+        "#FFCA28",
+        "#FFA000",
+        "#FFE082"
     ]
 )
 
@@ -399,13 +402,13 @@ fig3 = px.area(
 )
 
 
-# 핑크색 영역
+# 노란색 영역
 fig3.update_traces(
     line=dict(
-        color="#E91E63",
+        color="#F4B400",
         width=3
     ),
-    fillcolor="rgba(233, 30, 99, 0.25)",
+    fillcolor="rgba(244, 180, 0, 0.25)",
     hovertemplate=(
         "날짜: %{x|%Y-%m-%d}"
         "<br>전체 관객수: %{y:,.0f}명"
@@ -557,9 +560,9 @@ fig4 = px.bar(
 )
 
 
-# 핑크색 막대
+# 노란색 막대
 fig4.update_traces(
-    marker_color="#E91E63",
+    marker_color="#F4B400",
     hovertemplate=(
         "영화: %{y}"
         "<br>기간 전체 일관객: %{x:,.0f}명"
@@ -642,10 +645,7 @@ weekday_order = [
 
 
 # 날짜에서 요일 추출
-# weekday()
 # 월요일 = 0
-# 화요일 = 1
-# ...
 # 일요일 = 6
 heatmap_df["요일"] = (
     heatmap_df["날짜"]
@@ -685,7 +685,7 @@ heatmap_data = heatmap_data.reindex(
 
 
 # ============================================================
-# 핑크 히트맵
+# 노란색 히트맵
 # ============================================================
 fig5 = px.imshow(
     heatmap_data,
@@ -701,15 +701,15 @@ fig5 = px.imshow(
     ],
     aspect="auto",
 
-    # 연한 핑크 → 진한 핑크
+    # 연한 노랑 → 진한 노랑
     color_continuous_scale=[
-        "#FFF0F5",
-        "#FFD6E7",
-        "#FFB6D5",
-        "#FF8FBC",
-        "#F06292",
-        "#E91E63",
-        "#AD1457"
+        "#FFFDE7",
+        "#FFF9C4",
+        "#FFF176",
+        "#FFD54F",
+        "#FFCA28",
+        "#F4B400",
+        "#FF8F00"
     ]
 )
 
