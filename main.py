@@ -3,9 +3,9 @@ import pandas as pd
 import plotly.express as px
 
 
-# =========================
+# ============================================================
 # 기본 설정
-# =========================
+# ============================================================
 st.set_page_config(
     page_title="영화 데이터 그래프 도감 1 - 시간",
     page_icon="🎬",
@@ -14,14 +14,18 @@ st.set_page_config(
 
 st.title("🎬 영화 데이터 그래프 도감 1 - 시간")
 st.write(
-    "일별 박스오피스 데이터를 이용해 영화의 관객 변화를 다양한 그래프로 살펴봅니다."
+    "일별 박스오피스 데이터를 이용해 영화의 관객 변화를 "
+    "다양한 그래프로 살펴봅니다."
 )
 
 
-# =========================
+# ============================================================
 # 데이터 불러오기
-# =========================
-DATA_URL = "https://raw.githubusercontent.com/greatsong/modudata/main/data/kobis_daily.csv"
+# ============================================================
+DATA_URL = (
+    "https://raw.githubusercontent.com/greatsong/modudata/main/"
+    "data/kobis_daily.csv"
+)
 
 
 @st.cache_data
@@ -74,7 +78,8 @@ st.success(
 
 
 # ============================================================
-# 그래프 1. 영화별 일관객 변화
+# 그래프 1
+# 영화별 일관객 변화
 # ============================================================
 st.divider()
 
@@ -127,7 +132,7 @@ if record_count == 1:
     )
 
 
-# 그래프
+# 그래프 1
 fig1 = px.line(
     movie_df,
     x="날짜",
@@ -140,13 +145,21 @@ fig1 = px.line(
     }
 )
 
+
+# 핑크색 선
 fig1.update_traces(
+    line=dict(color="#E91E63", width=3),
+    marker=dict(
+        color="#E91E63",
+        size=7
+    ),
     hovertemplate=(
         "날짜: %{x|%Y-%m-%d}"
         "<br>관객수: %{y:,.0f}명"
         "<extra></extra>"
     )
 )
+
 
 fig1.update_xaxes(
     tickformat="%Y-%m-%d",
@@ -162,6 +175,7 @@ fig1.update_layout(
     height=550,
     hovermode="closest"
 )
+
 
 st.plotly_chart(
     fig1,
@@ -184,7 +198,8 @@ st.text_area(
 
 
 # ============================================================
-# 그래프 2. 인기 영화 TOP 5 일관객 변화
+# 그래프 2
+# 인기 영화 TOP 5 일관객 변화
 # ============================================================
 st.divider()
 
@@ -210,6 +225,7 @@ top5_movies = movie_total.head(5).index.tolist()
 st.write("**전체 기간 일관객 합계 TOP 5**")
 
 for i, movie in enumerate(top5_movies, start=1):
+
     total = movie_total[movie]
 
     st.write(
@@ -226,8 +242,9 @@ all_dates = pd.date_range(
 )
 
 
-# TOP 5 영화 데이터를 하나로 만들기
+# TOP 5 데이터 생성
 top5_graph_list = []
+
 
 for movie in top5_movies:
 
@@ -239,7 +256,10 @@ for movie in top5_movies:
     )
 
     temp = temp.rename("일관객").reset_index()
-    temp = temp.rename(columns={"index": "날짜"})
+
+    temp = temp.rename(
+        columns={"index": "날짜"}
+    )
 
     temp["영화명"] = movie
 
@@ -252,7 +272,7 @@ top5_graph_df = pd.concat(
 )
 
 
-# 그래프
+# 그래프 2
 fig2 = px.line(
     top5_graph_df,
     x="날짜",
@@ -264,7 +284,14 @@ fig2 = px.line(
         "날짜": "날짜",
         "일관객": "일관객 수",
         "영화명": "영화"
-    }
+    },
+    color_discrete_sequence=[
+        "#E91E63",
+        "#F06292",
+        "#EC407A",
+        "#AD1457",
+        "#F48FB1"
+    ]
 )
 
 
@@ -297,7 +324,7 @@ fig2.update_layout(
 )
 
 
-# 범례 클릭으로 영화 숨기기 / 비교하기
+# 범례 클릭 기능
 fig2.update_layout(
     legend=dict(
         itemclick="toggle",
@@ -327,7 +354,8 @@ st.text_area(
 
 
 # ============================================================
-# 그래프 3. 날짜별 전체 일관객 합계
+# 그래프 3
+# 날짜별 전체 일관객 합계
 # ============================================================
 st.divider()
 
@@ -341,13 +369,16 @@ st.write(
 
 # 날짜별 일관객 합계
 daily_total = (
-    df.groupby("날짜", as_index=False)["일관객"]
+    df.groupby(
+        "날짜",
+        as_index=False
+    )["일관객"]
     .sum()
     .sort_values("날짜")
 )
 
 
-# TOP 3 날짜
+# 관객이 가장 많았던 TOP 3 날짜
 top3_days = (
     daily_total
     .nlargest(3, "일관객")
@@ -355,7 +386,7 @@ top3_days = (
 )
 
 
-# 그래프
+# 그래프 3
 fig3 = px.area(
     daily_total,
     x="날짜",
@@ -368,7 +399,13 @@ fig3 = px.area(
 )
 
 
+# 핑크색 영역
 fig3.update_traces(
+    line=dict(
+        color="#E91E63",
+        width=3
+    ),
+    fillcolor="rgba(233, 30, 99, 0.25)",
     hovertemplate=(
         "날짜: %{x|%Y-%m-%d}"
         "<br>전체 관객수: %{y:,.0f}명"
@@ -377,7 +414,7 @@ fig3.update_traces(
 )
 
 
-# TOP 3 날짜를 그래프에 표시
+# TOP 3 날짜 표시
 for _, row in top3_days.iterrows():
 
     date_text = row["날짜"].strftime(
@@ -428,8 +465,9 @@ st.plotly_chart(
 )
 
 
-# TOP 3 날짜 목록
+# TOP 3 날짜
 st.markdown("#### 🏆 관객이 가장 많았던 날짜 TOP 3")
+
 
 for rank, (_, row) in enumerate(
     top3_days.sort_values(
@@ -465,7 +503,8 @@ st.text_area(
 
 
 # ============================================================
-# 그래프 4. 영화별 기간 전체 일관객 합계 TOP 10
+# 그래프 4
+# 영화별 기간 전체 일관객 합계 TOP 10
 # ============================================================
 st.divider()
 
@@ -493,7 +532,7 @@ top10_df = (
 )
 
 
-# Plotly에서 높은 값이 위로 오도록 오름차순 정렬
+# 높은 값이 위로 오도록 정렬
 top10_plot_df = (
     top10_df
     .sort_values(
@@ -503,7 +542,7 @@ top10_plot_df = (
 )
 
 
-# 그래프
+# 그래프 4
 fig4 = px.bar(
     top10_plot_df,
     x="총일관객",
@@ -518,8 +557,9 @@ fig4 = px.bar(
 )
 
 
-# 마우스를 올렸을 때 기록일수 표시
+# 핑크색 막대
 fig4.update_traces(
+    marker_color="#E91E63",
     hovertemplate=(
         "영화: %{y}"
         "<br>기간 전체 일관객: %{x:,.0f}명"
@@ -565,7 +605,8 @@ st.text_area(
 
 
 # ============================================================
-# 그래프 5. 월 × 요일별 일관객 합계 히트맵
+# 그래프 5
+# 월 × 요일별 일관객 합계 히트맵
 # ============================================================
 st.divider()
 
@@ -578,12 +619,14 @@ st.write(
 )
 
 
-# 원본 데이터 복사
+# 데이터 복사
 heatmap_df = df.copy()
 
 
 # 날짜에서 월 추출
-heatmap_df["월"] = heatmap_df["날짜"].dt.month
+heatmap_df["월"] = (
+    heatmap_df["날짜"].dt.month
+)
 
 
 # 요일 순서
@@ -599,11 +642,19 @@ weekday_order = [
 
 
 # 날짜에서 요일 추출
-# weekday() → 월요일 0, 일요일 6
+# weekday()
+# 월요일 = 0
+# 화요일 = 1
+# ...
+# 일요일 = 6
 heatmap_df["요일"] = (
     heatmap_df["날짜"]
     .dt.weekday
-    .map(dict(enumerate(weekday_order)))
+    .map(
+        dict(
+            enumerate(weekday_order)
+        )
+    )
 )
 
 
@@ -620,20 +671,22 @@ heatmap_data = (
 )
 
 
-# 월요일 → 일요일 순서로 정렬
+# 월요일 → 일요일 순서
 heatmap_data = heatmap_data.reindex(
     columns=weekday_order
 )
 
 
-# 1월 → 12월 순서로 정렬
+# 1월 → 12월 순서
 heatmap_data = heatmap_data.reindex(
     range(1, 13),
     fill_value=0
 )
 
 
-# 히트맵
+# ============================================================
+# 핑크 히트맵
+# ============================================================
 fig5 = px.imshow(
     heatmap_data,
     labels={
@@ -647,11 +700,21 @@ fig5 = px.imshow(
         for month in heatmap_data.index
     ],
     aspect="auto",
-    color_continuous_scale="Blues"
+
+    # 연한 핑크 → 진한 핑크
+    color_continuous_scale=[
+        "#FFF0F5",
+        "#FFD6E7",
+        "#FFB6D5",
+        "#FF8FBC",
+        "#F06292",
+        "#E91E63",
+        "#AD1457"
+    ]
 )
 
 
-# 마우스를 올렸을 때 표시되는 정보
+# 마우스를 올렸을 때
 fig5.update_traces(
     hovertemplate=(
         "월: %{y}"
@@ -694,7 +757,7 @@ st.text_area(
 
 
 # ============================================================
-# 끝
+# 마무리
 # ============================================================
 st.divider()
 
